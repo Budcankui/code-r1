@@ -5,18 +5,19 @@ from openai import OpenAI
 client = OpenAI(base_url='http://***/v1', api_key='***')
 def get_llm_output(prompt):
     
-    messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt},
-        ]
+    # messages = [
+    #         {"role": "system", "content": "You are a helpful assistant."},
+    #         {"role": "user", "content": prompt},
+    #     ]
 
-    completion = client.chat.completions.create(
-        model = 'qwen3-32b',
-        temperature=0.0,
-        messages=messages,
-        stream=False,
-    )
-    output = completion.choices[0].message.content
+    # completion = client.chat.completions.create(
+    #     model = 'qwen3-32b',
+    #     temperature=0.0,
+    #     messages=messages,
+    #     stream=False,
+    # )
+    # output = completion.choices[0].message.content
+    output=random.choice(['是', '否'])
     return output
 
 
@@ -115,20 +116,21 @@ def answer_reward(user_message, answer):
 
 
 def exec_code(code: str) -> str:
-    import requests
+    # import requests
     
-    url = 'http://10.250.2.24:8090/run_code'
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    data = {
-        'code': code,
-        'language': 'python'
-    }
+    # url = 'http://10.250.2.24:8090/run_code'
+    # headers = {
+    #     'Content-Type': 'application/json'
+    # }
+    # data = {
+    #     'code': code,
+    #     'language': 'python'
+    # }
 
-    response = requests.post(url, json=data, headers=headers)
-    stdout = response.json()['run_result']['stdout']
-    stderr = response.json()['run_result']['stderr']
+    # response = requests.post(url, json=data, headers=headers)
+    # stdout = response.json()['run_result']['stdout']
+    # stderr = response.json()['run_result']['stderr']
+    stoutd, stderr = '[test]', '[test]'
     print(stdout, stderr)
     return stdout[:1000], stderr[:1000]
 

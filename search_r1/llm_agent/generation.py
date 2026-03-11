@@ -262,17 +262,20 @@ class LLMGenerationManager:
             rollings_active = DataProto.from_dict({
                 k: v[active_mask] for k, v in rollings.batch.items()
             })            
+          
             gen_output = self._generate_with_gpu_padding(rollings_active)
             meta_info = gen_output.meta_info            
             responses_ids, responses_str = self._postprocess_responses(gen_output.batch['responses'])
             # 处理为最开始的batch_size
             responses_ids, responses_str = self.tensor_fn._example_level_pad(responses_ids, responses_str, active_mask)
             # Execute in environment and process observations
+  
             next_obs, dones, valid_action, is_search = self.execute_predictions(
                 responses_str, self.tokenizer.pad_token, active_mask
             )
             
             curr_active_mask = torch.tensor([not done for done in dones], dtype=torch.bool)
+     
             active_mask = active_mask * curr_active_mask
             active_num_list.append(active_mask.sum().item())
             turns_stats[curr_active_mask] += 1
@@ -497,9 +500,10 @@ If I want to give the final answer, I should put the answer between <answer> and
             'language': 'python'
         }
 
-        response = requests.post(url, json=data, headers=headers)
-        stdout = response.json()['run_result']['stdout']
-        stderr = response.json()['run_result']['stderr']
+        # response = requests.post(url, json=data, headers=headers)
+        # stdout = response.json()['run_result']['stdout']
+        # stderr = response.json()['run_result']['stderr']
+        stdout, stderr = '[test]', '[test]'
         print(stdout, stderr)
         return stdout[:1000], stderr[:1000]
     

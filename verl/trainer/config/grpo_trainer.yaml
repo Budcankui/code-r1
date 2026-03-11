@@ -17,10 +17,10 @@ data:
   # The program will read all files into memory, so it can't be too large (< 100GB).
   # The path can be either a local path or an HDFS path.
   # For HDFS path, we provide utils to download it to DRAM and convert it to a local path.
-  train_files: /home/user/wyf/code-r1/verl/data/code_train.parquet
+  train_files: /root/data/code-r1/data/code_train.parquet
 
   # Validation parquet. Can be a list or a single file.
-  val_files: /home/user/wyf/code-r1/verl/data/code_val.parquet
+  val_files: /root/data/code-r1/data/code_val.parquet
 
   # The field in the dataset where the prompt is located. Default is 'prompt'.
   prompt_key: prompt
@@ -117,7 +117,7 @@ actor_rollout_ref:
   model:
 
     # Huggingface model path. This can be either local path or HDFS path.
-    path: /home/user/Downloads/Qwen2.5-3B-Instruct
+    path: Qwen/Qwen2.5-0.5B-Instruct
 
     # Custom chat template for the model.
     custom_chat_template: null
@@ -176,7 +176,7 @@ actor_rollout_ref:
     strategy: fsdp
 
     # Split each sample into sub-batches of this size for PPO
-    ppo_mini_batch_size: 8
+    ppo_mini_batch_size: 2
 
     # [Deprecated] Global micro batch size
     ppo_micro_batch_size: null
@@ -458,7 +458,7 @@ actor_rollout_ref:
     layered_summon: False
 
     # TP size for rollout. Only effective for vLLM.
-    tensor_model_parallel_size: 2
+    tensor_model_parallel_size: 1
 
     # max number of tokens in a batch
     max_num_batched_tokens: 8192
@@ -899,7 +899,7 @@ custom_reward_function:
 
   # The path to the file containing your customized reward function.
   # If not specified, pre-implemented reward functions will be used.
-  path: /home/user/wyf/code-r1/verl/my_reward/code.py
+  path: /root/data/code-r1/my_reward/code.py
 
   # The name of the reward function within the specified file. Default is 'compute_score'.
   name: compute_score
@@ -1023,7 +1023,7 @@ trainer:
   experiment_name: code-r1
 
   # Logging backends to use: "console", "wandb", etc.
-  logger: [ 'tensorboard']
+  logger: [ 'console']
 
   # Number of generations to log during validation
   # 修改配置
@@ -1040,7 +1040,7 @@ trainer:
   nnodes: 1
 
   # Number of GPUs per node
-  n_gpus_per_node: 2
+  n_gpus_per_node: 1
 
   # Save frequency (by iteration) for model checkpoints
   save_freq: 15
@@ -1103,5 +1103,5 @@ ray_init:
   # Path to save Ray timeline JSON for performance profiling
   timeline_json_file: null
 
-max_turns: 5
+max_turns: 2
 do_search: True

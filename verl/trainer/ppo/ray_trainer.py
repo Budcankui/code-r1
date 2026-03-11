@@ -1121,7 +1121,7 @@ class RayPPOTrainer:
                 metrics = {}
                 timing_raw = {}
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
-
+            
                 # pop those keys for generation
                 batch_keys_to_pop = ["input_ids", "attention_mask", "position_ids"]
                 non_tensor_batch_keys_to_pop = ["raw_prompt_ids"]
@@ -1142,7 +1142,8 @@ class RayPPOTrainer:
                     batch_keys=batch_keys_to_pop,
                     non_tensor_batch_keys=non_tensor_batch_keys_to_pop,
                 )
-                
+               
+              
                 # interleave=True:[A,B] -- > [A,A,A,B,B,B]
                 # interleave=False:[A,B] -- > [A,B,A,B,A,B]
                 gen_batch = gen_batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n, interleave=True)
@@ -1177,20 +1178,20 @@ class RayPPOTrainer:
                         
                         with marked_timer("gen", timing_raw, color="red"):
                             generation_manager.timing_raw = timing_raw
-                            
+
                             # prompt + response的input_ids， attention_mask， info_mask， position_ids
                             final_gen_batch_output = generation_manager.run_llm_loop(
                                 gen_batch=gen_batch,
                                 initial_input_ids=first_input_ids,
                             )
-                          
-                            
+
                             for key in final_gen_batch_output.batch.keys():
                                 final_gen_batch_output.batch[key] = final_gen_batch_output.batch[key].long()
-
+                            breakpoint()
                             with torch.no_grad():
                                 
                                 output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
+                                breakpoint()
                                 # 将log_prob合并到final_gen_batch_output
                                 final_gen_batch_output = final_gen_batch_output.union(output)
                             
@@ -1426,7 +1427,7 @@ class RayPPOTrainer:
 
                 if isinstance(self.train_dataloader.sampler, AbstractCurriculumSampler):
                     self.train_dataloader.sampler.update(batch=batch)
-
+               
                 # TODO: make a canonical logger that supports various backend
                 logger.log(data=metrics, step=self.global_steps)
 
